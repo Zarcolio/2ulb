@@ -3,10 +3,13 @@ Easy shortcut to make scripts executable and link them from /usr/local/bin
 
 No installation needed.
 
-# Use
+# Use 2ulb.py
 sudo python 2ulb.py <inputfile> [-f]
 
 Or after using 2ulb on 2ulb:
 sudo 2ulb <inputfile> [-f]
 
 Use -f to force an overwrite of the link in /usr/local/bin.
+
+# Use 2ulb-curdir.sh
+Install a symbolic link with 2ulb:
