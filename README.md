@@ -1,7 +1,11 @@
 # 2ulb
 Easy shortcut to make scripts executable and link them from /usr/local/bin
 
-No installation needed.
+#Installation
+```
+git clone https://github.com/Zarcolio/2ulb
+sudo python3 2ulb 2ulb.py
+```
 
 # Use 2ulb.py
 `sudo python 2ulb.py <inputfile> [-f]`
