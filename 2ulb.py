@@ -19,7 +19,7 @@ if len(sys.argv) == 3:
 else:
     sForce = ""
 
-scriptname = sys.argv[1]
+scriptname = sys.argv[1].lower()
 scriptfullpath = os.path.abspath(scriptname)
 
 chmodcmd = "chmod +x " + "\"" + scriptfullpath  + "\""
