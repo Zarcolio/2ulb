@@ -1,32 +1,42 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
+import argparse
 import os
+import subprocess
 
-if os.geteuid() != 0:
-    exit("\nYou need to have root privileges to run this script.\nPlease try again using the sudo command.\n")
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("inputfile", help="Input file")
+    parser.add_argument("-f", "--force", action="store_true",
+                        help="Force symlink creation")
+    args = parser.parse_args()
 
-if len(sys.argv) == 1:
-    print ("\nToo few arguments:")
-    print ("sudo python 2ulb.py <inputfile> [-f]\n")
-    print("Or after using 2ulb on 2ulb:")
-    print ("sudo 2ulb <inputfile> [-f]\n")
-    sys.exit(2)
+    if os.geteuid() != 0:
+        print("You need to have root privileges to run this script.")
+        print("Please try again using the sudo command.")
+        return
 
-if len(sys.argv) == 3:
-    sForce = sys.argv[2]
-else:
-    sForce = ""
+    scriptname = os.path.splitext(os.path.basename(args.inputfile))[0]
+    scriptfullpath = os.path.abspath(args.inputfile)
+    symlink_path = f"/usr/local/bin/{scriptname}"
 
-scriptname = sys.argv[1].lower()
-scriptfullpath = os.path.abspath(scriptname)
+    if os.path.exists(symlink_path):
+        if args.force:
+            os.remove(symlink_path)
+        else:
+            response = input(f"Symlink already exists: {symlink_path}. Do you want to overwrite it? (y/n): ")
+            if response.lower() == "y":
+                args.force = True
+            else:
+                print("Operation canceled.")
+                return
 
-chmodcmd = "chmod +x " + "\"" + scriptfullpath  + "\""
-retval1 = os.system(chmodcmd)
+    chmodcmd = f"chmod +x \"{scriptfullpath}\""
+    subprocess.run(chmodcmd, shell=True, check=True)
 
-scriptfilename = os.path.split(scriptfullpath)[1]
-scriptname = os.path.splitext(scriptfilename)[0]
+    lncmd = f"ln {'-f' if args.force else ''} -s \"{scriptfullpath}\" \"{symlink_path}\""
+    subprocess.run(lncmd, shell=True, check=True)
 
-lncmd = "ln " + sForce + " -s " + "\"" + scriptfullpath + "\"" + " \"/usr/local/bin/" + scriptname + "\"" 
-retval2 = os.system(lncmd)
+if __name__ == "__main__":
+    main()
